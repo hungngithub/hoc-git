@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AB-730 AI Business Professional - Luyện thi</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #e6e9f2;
+      --brand: #2563eb;
+      --brand2: #1d4ed8;
+      --good: #16a34a;
+      --bad: #dc2626;
+      --warn: #f59e0b;
+      --soft: #eef4ff;
+      --shadow: 0 18px 50px rgba(24, 35, 66, .10);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, #dbeafe 0, transparent 34rem),
+        radial-gradient(circle at bottom right, #dcfce7 0, transparent 30rem),
+        var(--bg);
+      color: var(--ink);
+    }
+    button, input, select, textarea { font: inherit; }
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      gap: 24px;
+      padding: 24px;
+    }
+    .sidebar {
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      position: sticky;
+      top: 24px;
+      height: calc(100vh - 48px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .main {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      max-width: 1040px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.18;
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      color: var(--muted);
+      margin: 0 0 18px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .stat b {
+      display: block;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+    }
+    .stat span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .progress {
+      height: 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      margin: 0 0 18px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--brand), #22c55e);
+      transition: width .25s ease;
+    }
+    .field {
+      display: grid;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    select, input[type="search"] {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: white;
+      outline: none;
+    }
+    select:focus, input:focus, textarea:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 4px rgba(59,130,246,.12);
+    }
+    .question-list {
+      margin-top: 14px;
+      overflow: auto;
+      padding-right: 4px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+    .qitem {
+      width: 100%;
+      text-align: left;
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid transparent;
+      background: transparent;
+      border-radius: 14px;
+      padding: 9px 8px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .qitem:hover { background: #f1f5f9; }
+    .qitem.active {
+      background: var(--soft);
+      border-color: #bfdbfe;
+    }
+    .badge {
+      width: 36px;
+      height: 28px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 13px;
+      background: #e5e7eb;
+      color: #334155;
+    }
+    .badge.good { background: #dcfce7; color: #166534; }
+    .badge.bad { background: #fee2e2; color: #991b1b; }
+    .badge.blank { background: #f1f5f9; color: #64748b; }
+    .qitem .tiny {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 13px;
+      color: #334155;
+    }
+    .star {
+      color: #cbd5e1;
+      font-size: 18px;
+    }
+    .star.on { color: var(--warn); }
+    .card {
+      background: rgba(255,255,255,.9);
+      border: 1px solid rgba(255,255,255,.82);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 8px 12px;
+      font-weight: 900;
+      font-size: 13px;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: white;
+      padding: 10px 14px;
+      font-weight: 900;
+      color: #1f2937;
+      cursor: pointer;
+      transition: transform .08s ease, background .16s ease, border-color .16s ease;
+    }
+    .btn:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: white;
+    }
+    .btn.primary:hover {
+      background: var(--brand2);
+      border-color: var(--brand2);
+    }
+    .btn.good { background: #ecfdf5; border-color: #bbf7d0; color: #166534; }
+    .btn.bad { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+    .question {
+      white-space: pre-wrap;
+      font-size: 19px;
+      line-height: 1.62;
+      font-weight: 680;
+      letter-spacing: -.01em;
+    }
+    .choices-title {
+      margin: 18px 0 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .raw-choices {
+      white-space: pre-wrap;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      line-height: 1.55;
+      color: #334155;
+      margin-top: 12px;
+    }
+    .options {
+      display: grid;
+      gap: 10px;
+      margin: 14px 0 0;
+    }
+    .option {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 10px;
+      align-items: start;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: white;
+      padding: 14px;
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.45;
+      color: var(--ink);
+    }
+    .option:hover { border-color: #93c5fd; background: #f8fbff; }
+    .option.selected { border-color: var(--brand); box-shadow: 0 0 0 4px rgba(37,99,235,.10); }
+    .option.correct { border-color: #86efac; background: #f0fdf4; }
+    .option.wrong { border-color: #fca5a5; background: #fef2f2; }
+    .letter {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: #334155;
+    }
+    .option.selected .letter { background: #dbeafe; color: #1d4ed8; }
+    .option.correct .letter { background: #dcfce7; color: #166534; }
+    .option.wrong .letter { background: #fee2e2; color: #991b1b; }
+    .yesno-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .yn-row {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 16px;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+    .yn-statement {
+      white-space: pre-wrap;
+      line-height: 1.48;
+      color: #243047;
+      font-weight: 650;
+    }
+    .yn-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    .yn {
+      min-width: 68px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 9px 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .yn.selected { border-color: var(--brand); background: #eff6ff; color: #1d4ed8; }
+    .yn.correct { border-color: #86efac; background: #f0fdf4; color: #166534; }
+    .yn.wrong { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      border-radius: 16px;
+      padding: 13px 14px;
+      font-weight: 900;
+    }
+    .feedback.show { display: block; }
+    .feedback.good { background: #dcfce7; color: #166534; }
+    .feedback.bad { background: #fee2e2; color: #991b1b; }
+    .feedback.info { background: #eff6ff; color: #1d4ed8; }
+    .answer-box {
+      display: none;
+      margin-top: 16px;
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .answer-box.show { display: block; }
+    .answer-title {
+      color: #1d4ed8;
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .answer-text {
+      white-space: pre-wrap;
+      line-height: 1.55;
+      font-weight: 760;
+    }
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      resize: vertical;
+      outline: none;
+      background: white;
+    }
+    .hint {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .footer-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .empty {
+      color: var(--muted);
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      padding: 18px;
+      border-radius: 16px;
+      text-align: center;
+    }
+    kbd {
+      border: 1px solid #cbd5e1;
+      border-bottom-width: 2px;
+      border-radius: 7px;
+      background: white;
+      padding: 1px 6px;
+      font-size: 12px;
+      color: #475569;
+    }
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; padding: 14px; }
+      .sidebar { position: static; height: auto; max-height: 48vh; }
+      .main { max-width: none; }
+      .question { font-size: 16px; }
+      .yn-row { grid-template-columns: 1fr; }
+      .yn-buttons { justify-content: stretch; }
+      .yn { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h1 class="title">AB-730<br>AI Business Professional</h1>
+      <p class="subtitle">Dữ liệu lấy từ sheet <b>Q&amp;A</b> mới. Tiến độ được lưu trong trình duyệt này.</p>
+
+      <div class="stats">
+        <div class="stat"><b id="statAnswered">0</b><span>Đã làm</span></div>
+        <div class="stat"><b id="statCorrect">0</b><span>Đúng</span></div>
+        <div class="stat"><b id="statWrong">0</b><span>Sai</span></div>
+        <div class="stat"><b id="statPercent">0%</b><span>Tỉ lệ đúng</span></div>
+      </div>
+      <div class="progress"><i id="progressBar"></i></div>
+
+      <div class="field">
+        <label for="mode">Lọc câu</label>
+        <select id="mode">
+          <option value="all">Tất cả câu hỏi</option>
+          <option value="unanswered">Chưa làm</option>
+          <option value="wrong">Câu sai</option>
+          <option value="starred">Đã đánh dấu ★</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="search">Tìm kiếm</label>
+        <input id="search" type="search" placeholder="Nhập từ khóa, số câu, đáp án..." />
+      </div>
+
+      <div class="actions" style="margin-top:10px">
+        <button class="btn" id="randomBtn" type="button">Ngẫu nhiên</button>
+        <button class="btn" id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div class="question-list" id="questionList"></div>
+    </aside>
+
+    <main class="main">
+      <section class="card topbar">
+        <span class="pill" id="counter">Câu 1 / 100</span>
+        <div class="actions">
+          <button class="btn" id="starBtn" type="button">☆ Đánh dấu</button>
+          <button class="btn" id="copyBtn" type="button">Copy đáp án</button>
+        </div>
+      </section>
+
+      <section class="card" id="contentArea"></section>
+
+      <section class="card footer-actions">
+        <button class="btn" id="prevBtn" type="button">← Câu trước</button>
+        <div class="actions">
+          <button class="btn primary" id="showBtn" type="button">Hiện đáp án</button>
+          <button class="btn good" id="markCorrectBtn" type="button">Tôi đúng</button>
+          <button class="btn bad" id="markWrongBtn" type="button">Tôi sai</button>
+        </div>
+        <button class="btn" id="nextBtn" type="button">Câu sau →</button>
+      </section>
+
+      <section class="card hint">
+        Phím tắt: <kbd>←</kbd>/<kbd>→</kbd> chuyển câu, <kbd>Space</kbd> hiện đáp án, <kbd>S</kbd> đánh dấu, <kbd>1</kbd>-<kbd>8</kbd> chọn đáp án, <kbd>Enter</kbd> kiểm tra câu nhiều lựa chọn/Yes-No.
+      </section>
+    </main>
+  </div>
+
+  <script id="questions-data" type="application/json">[{"id": 1, "question": "Q1. You use Microsoft 365 Copilot to generate a training plan.\nYou need to check if there are any existing training plans in your organization that are similar to the new training plan.\nWhat should you use in Copilot?", "choices": "A. Search\nB. Designer\nC. Apps\nD. Pages", "answer": "A. Search"}, {"id": 2, "question": "Q2. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Copilot can answer questions about Teams meetings that you are NOT invited to.\n2. Copilot can provide summaries and answer questions about chat messages, channel posts, and Teams meetings.\n3. Copilot can provide a summary of all the upcoming Teams meeting details you are invited\nto next week.", "answer": "1. No\n2. Yes\n3. Yes"}, {"id": 3, "question": "Q3. You use Microsoft 365 Copilot. You regularly upload the same five files to Copilot chats. You need to simplify\nreferencing the files in the chats.\nWhat are two ways to achieve the goal?", "choices": "A. Create an agent that has a knowledge source.\nB. Send a prompt that includes the files, and then save the prompt.\nC. Create a notebook that references the files.\nD. Ask the data engineers to create a fine-tuned model.\nE. Zip the documents and upload the ZIP file to the chats.", "answer": "A. Create an agent that has a knowledge source.\nC. Create a notebook that references the files."}, {"id": 4, "question": "Q4. Select the answer that correctly completes the sentence.\nYou are creating an agent in the Microsoft 365 Copilot app. The agent persona must be warm and friendly. To set the\npersona, you should modify the …", "choices": "capabilities.\ndescription.\ninstructions.\nsuggested prompts.", "answer": "instructions."}, {"id": 5, "question": "Q5. You create a prompt and add several files from your Microsoft OneDrive.\nYou share the prompt to a user by using email. What occurs when the user uses the prompt?", "choices": "A. The user is granted access to the files automatically and can run the prompt.\nB. The files are removed from the shared prompt, and the user must add the files manually before they can run the\nprompt.\nC. The user is prompted to request access to the files when they attempt to run the prompt.\nD. The user can run the prompt successfully only if they have access to the files in your OneDrive.", "answer": "D. The user can run the prompt successfully only if they have access to the files in your OneDrive."}, {"id": 6, "question": "Q6. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. You can chat with the Analyst agent from within an existing Microsoft 365 Copilot conversation.\n2. You can chat with the Researcher agent from within an existing Microsoft 365 Copilot conversation.\n3. You can chat with multiple agents concurrently within an existing Microsoft 365 Copilot conversation.", "answer": "1. Yes\n2. Yes\n3. Yes"}, {"id": 7, "question": "Q7. You join an internal Microsoft Teams meeting late and want to catch up on what you missed. The meeting is being Recorded. You need to summarize the portion of the meeting that you missed as soon as possible.\nWhat is the best approach to achieve the goal?", "choices": "A. From the Teams app, ask Copilot in Teams to summarize what you missed so far.\nB. From the meeting, read the transcript.\nC. From the Microsoft 365 Copilot app, ask Copilot to tell you what you missed.\nD. From the Teams app, view the intelligent recap.", "answer": "A. From the Teams app, ask Copilot in Teams to summarize what you missed so far."}, {"id": 8, "question": "Q8. You sign in to the Microsoft 365 Copilot app by using your work account as shown in the following exhibit.\nA colleague tells you that when they open the Microsoft 365 Copilot app, they have access to the Researcher agent.\nYou need to access to the Researcher agent. What should you do?", "choices": "A. Request a Microsoft 365 Copilot license from an administrator.\nB. Select Explore agents and then search for Researcher.\nC. Sign in to the Copilot app by using a personal account.\nD. From Microsoft Edge, use your work account to sign in to https://copilot.microsoft.com.", "answer": "B. Select Explore agents and then search for\nResearcher."}, {"id": 9, "question": "Q9. How does Microsoft 365 Copilot maintain the privacy and security of your organization's information?", "choices": "A. Copilot uses dynamic, AI-driven access controls to ensure that users have access to only the information they need.\nB. Copilot applies separate security, compliance, and privacy policies that override those configured in Microsoft 365.\nC. Copilot inherits all the security, compliance, and privacy policies configured by your organization in Microsoft 365.\nD. Copilot applies granular security, compliance, and privacy policies that each user can manage independently.", "answer": "C. Copilot inherits all the security, compliance, and privacy policies configured by your organization in Microsoft 365."}, {"id": 10, "question": "Q10. You are discussing Microsoft 365 Copilot with a colleague. The colleague asks which data Copilot uses to answer questions when using the Work scope.\nWhat should you tell your colleague?", "choices": "A. Copilot provides responses based only on data that the user can access and the general knowledge that Copilot was\ntrained on.\nB. Copilot provides responses based on all the data in your organization's Microsoft 365 environment and the general\nknowledge that Copilot was trained on.\nC. Copilot provides responses based only on data that the user can access.\nD. Copilot provides responses based only on the general knowledge that Copilot was trained on.", "answer": "A. Copilot provides responses based only on data that the user can access and the general knowledge that Copilot was\ntrained on."}, {"id": 11, "question": "Q11. You are using Microsoft 365 Copilot to enhance your productivity in Microsoft Word.\nWhich two tasks can you achieve by using Copilot in Word?", "choices": "A. Insert a table of contents based on the headings in your document.\nB. Customize the page margins to match your company's document standards.\nC. Generate a summary of the key points in your document.\nD. Insert a custom watermark that has specific text and formatting.", "answer": "A. Insert a table of contents based on the headings in your document.\nC. Generate a summary of the key points in your document."}, {"id": 12, "question": "Q12. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Microsoft 365 Copilot can surface data from Microsoft Teams chats.\n2. Microsoft 365 Copilot can schedule, draft, and send emails based on certain conditions.\n3. Microsoft 365 Copilot can summarize, draft, and answer questions about content from Microsoft Teams meetings.", "answer": "1. Yes\n2. No\n3. Yes"}, {"id": 13, "question": "Q13. You use the Researcher agent in Microsoft 365 Copilot to generate a report.\nWhat can you use to verify whether the report was generated by using valid sources?", "choices": "A. citations\nB. instructions\nC. memory\nD. capabilities", "answer": "A. citations"}, {"id": 14, "question": "Q14. You create a Microsoft 365 Copilot notebook and add a file named Process.docx from a local folder. Yesterday, you updated Process.docx in the local folder.\nWhat will occur when you chat in the notebook?", "choices": "A. The chat will reference the most recent version of Process.docx.\nB. The chat will reference both versions of Process.docx.\nC. The chat will reference only the original version of Process.docx.", "answer": "C. The chat will reference only the original version of Process.docx."}, {"id": 15, "question": "Q15. You have a Microsoft 365 subscription.\nYou do NOT have a Microsoft 365 Copilot license.\nWhen you send a prompt in Microsoft 365 Copilot Chat, which three sources does Copilot Chat use to respond?", "choices": "A. Chat data in Microsoft Teams\nB. Your organization's databases\nC. The prompt context\nD. Organizational data in Microsoft 365\nE. Internet search data\nF. The conversation history", "answer": "C. The prompt context\nE. Internet search data\nF. The conversation history"}, {"id": 16, "question": "Q16. Select the answer that correctly completes the sentence.\n… enables organizations to apply governance policies to conversations generated by using Microsoft 365 Copilot.", "choices": "Microsoft Defender for Cloud\nMicrosoft Entra ID\nMicrosoft Intune\nMicrosoft Purview", "answer": "Microsoft Purview"}, {"id": 17, "question": "Q17. In Microsoft 365 Copilot, you save a prompt\nWhich two actions can you perform for the saved prompt? Each correct answer presents a complete the solution.", "choices": "A. Modify the saved prompt text.\nB. Remove the saved prompt from the Copilot Prompt Gallery.\nC. Update the title of the saved prompt.\nD. Schedule the saved prompt to run daily.\nE. Share the saved prompt to a Microsoft Teams team.", "answer": "B. Remove the saved prompt from the Copilot Prompt Gallery.\nE. Share the saved prompt to a Microsoft Teams team."}, {"id": 18, "question": "Q18. You use Microsoft 365 Copilot to create a proposal in Microsoft Word based on a document in a Microsoft SharePoint Library. You need to ensure that the information cited in the proposal is accurate.\nWhat is the best approach to achieve the goal?", "choices": "A. Manually verify the citations in the generated content.\nB. Use Copilot in Word to verify the citations.\nC. Create an agent that contains your organization's editorial standards and use the agent to verify the citations.\nD. Create a notebook that contains all the reference material and use the notebook to verify the citations.", "answer": "A. Manually verify the citations in the generated content."}, {"id": 19, "question": "Q19. You have an open Microsoft Word document that has a sensitivity label named Highly Confidential applied.\nFrom Microsoft PowerPoint, you plan to use Microsoft 365 Copilot to generate a presentation of the Word document.\nWhat will be the result?", "choices": "A. Copilot will be unable to generate the presentation.\nB. Copilot will generate the presentation and will prompt you for a label.\nC. Copilot will generate the presentation and apply the Highly Confidential label.\nD. Copilot will generate the presentation and will NOT apply a label.", "answer": "C. Copilot will generate the presentation and apply the Highly Confidential label."}, {"id": 20, "question": "Q20. When you are creating an agent in Microsoft 365 Copilot, you can leverage generative AI to build the agent by using", "choices": "A. the Configure tab\nB. a Copilot notebook\nC. a Copilot page\nD. the Describe tab", "answer": "D. the Describe tab"}, {"id": 21, "question": "Q21. You are using Microsoft 365 Copilot to enhance your productivity in Microsoft Outlook.\nWhich two tasks can you achieve by using Copilot in Outlook?", "choices": "A. Insert a custom HTML signature that has specific formatting.\nB. Generate a draft response to an email based on the context of the conversation.\nC. Create a summary of unread emails in your inbox.\nD. Customize the folder structure to organize your emails.", "answer": "B. Generate a draft response to an email based on the context of the conversation.\nC. Create a summary of unread emails in your inbox."}, {"id": 22, "question": "Q22. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Microsoft 365 Copilot is trained on your organization’s business data.\n2. Microsoft 365 Copilot can summarize emails in mailboxes that were shared with you.\n3. Microsoft 365 Copilot leverages the security framework defined in Microsoft 365 to provide you with access to emails, documents, and other enterprise data.", "answer": "1. No\n2. Yes\n3. Yes"}, {"id": 23, "question": "Q23. Select the answer that correctly completes the sentence.\nOverreliance is a common risk associated with generative\nAI, where …", "choices": "users exploit vulnerabilities to elicit unauthorized behavior.\nthe model is tricked into exposing confidential information.\nthe model generates misleading, inaccurate, or irrelevant content.\nusers accept the AI-generated output without verifying its accuracy.", "answer": "users accept the AI-generated output without verifying its accuracy."}, {"id": 24, "question": "Q24. You have several separate Microsoft 365 Copilot conversations.\nYou need to gather the conversations so that you can find them more easily, and the conversations can share the same reference material.\nWhat is the best solution to achieve the goal?", "choices": "A. a notebook\nB. an agent\nC. anapp\nD. a page", "answer": "A. a notebook"}, {"id": 25, "question": "Q25. You are a project coordinator for a small consulting firm. You are responsible for tracking client communications,\nmanaging project timelines, and preparing weekly status updates for internal stakeholders.\nYou have a Microsoft 365 Copilot license. You create an agent to help you monitor project milestones, follow up on client emails, and generate weekly summary reports.\nWith whom can you share the agent?", "choices": "A. Only the people in your organization\nB. The people in your organization and people that have personal Microsoft accounts\nC. Only Microsoft Teams channel members\nD. Any person who has a valid email address", "answer": "A. Only the people in your organization"}, {"id": 26, "question": "Q26. You receive the following response to a prompt: “Sorry, it looks like | can’t respond to this. Let’s try a different topic.”\nWhat is a possible cause of the response?", "choices": "A. The prompt is too vague to illicit a response.\nB. The prompt contains language that violates safety guidelines.\nC. The prompt contains more than five requests.\nD. The prompt is larger than the allowed context window.", "answer": "B. The prompt contains language that violates safety guidelines."}, {"id": 27, "question": "Q27. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. From the Microsoft 365 Copilot desktop app, you can see only the last 20 conversations.\n2. From the Microsoft 365 Copilot desktop app, you can hide conversations, but you cannot delete them.\n3. If you start a conversation in the Microsoft 365 Copilot desktop app, you can continue the conversation when you sign in to Copilot by using a web browser on a different computer.", "answer": "1. No\n2. No\n3. Yes"}, {"id": 28, "question": "Q28. You create a prompt in Microsoft 365 Copilot to help you create a draft project report. You need the prompt to be\navailable in the Copilot Prompt Gallery.\nWhat should you do first?", "choices": "A. Create a notebook.\nB. Add an agent.\nC. Create a page.\nD. Run the prompt.", "answer": "D. Run the prompt."}, {"id": 29, "question": "Q29. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Microsoft 365 Copilot indicates whether source content has a sensitivity label applied as part of the references in the response.\n2. Microsoft 365 Copilot can provide you with summaries of files in SharePoint that have sensitivity labels applied as long as you have access to the files.\n3. When you use Microsoft 365 Copilot to create new content based on an item that has a sensitivity label, the new content automatically inherits the sensitivity label.", "answer": "1. Yes\n2. Yes\n3. Yes"}, {"id": 30, "question": "Q30. Select the answer that correctly completes the sentence.\nWhen you are creating an agent in Microsoft 365 Copilot, you can leverage generative AI to build the agent by using ...", "choices": "the Configure tab\na Copilot notebook\na Copilot page\nthe Describe tab", "answer": "the Describe tab"}, {"id": 31, "question": "Q31. You have a Microsoft 365 Copilot license. You are preparing a business presentation by using Copilot in PowerPoint.\nWhich two tasks can you achieve by using Copilot in PowerPoint?", "choices": "A. Insert a custom animation for a specific object on a slide.\nB. Create a slide layout based on the content of your presentation.\nC. Customize the design theme of your presentation to match your company's branding.\nD. Produce a summary slide based on the key points in your presentation.", "answer": "B. Create a slide layout based on the content of your presentation.\nD. Produce a summary slide based on the key points in your presentation."}, {"id": 32, "question": "Q32. You use Microsoft 365 Copilot. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. You can delete your conversation history only if your administrator allows you to do so.\n2. When you delete a conversation, the associated files stored in Microsoft SharePoint are also deleted.\n3. When you uninstall a Copilot agent, all the conversations associated with the agent are retained.", "answer": "1. No\n2. No\n3. Yes"}, {"id": 33, "question": "Q33. You ask Microsoft 365 Copilot to create a report based on information from the web.\nYou verify the response and discover that some information is fictional. What is this an example of?", "choices": "A. Deepfake\nB. Fabrication\nC. Overreliance\nD. Prompt injection\nE. Bias", "answer": "B. Fabrication"}, {"id": 34, "question": "Q34. You plan to use a notebook in Microsoft 365 Copilot. What is the purpose of a notebook?", "choices": "A. to create a transcript of a conversation that you can easily email to other users\nB. to provide a private location that can be used to organize reference materials across related conversations\nC. to generate a summary of all the interactions you had with Copilot during a specific conversation", "answer": "B. to provide a private location that can be used to organize reference materials across related conversations"}, {"id": 35, "question": "Q35. From Microsoft 365 Copilot, you add custom instructions. For each of the following statements, select Yes if the\nstatement is true. Otherwise, select No.", "choices": "1. The instructions will apply to new chat conversations.\n2. The instructions will apply to new conversations with the Researcher agent and the Analyst agent.\n3. The instructions will apply to previous responses in existing conversation.", "answer": "1. Yes\n2. No\n3. No"}, {"id": 36, "question": "Q36. You are a medical researcher. You need to ensure that Microsoft 365 Copilot responds to you in a professional manner that is appropriate to your field.\nWhat is the best approach to achieve the goal?", "choices": "A. In the conversation, attach an example to your prompts.\nB. From Settings, configure Custom instructions.\nC. In the conversation, create a sample prompt and save it to the Copilot Prompt Gallery.\nD. From Settings, configure Copilot Memory.", "answer": "B. From Settings, configure Custom instructions."}, {"id": 37, "question": "Q37. From Microsoft 365 Copilot, you add custom instructions. For each of the following statements, select Yes if the\nstatement is true. Otherwise, select No.", "choices": "1. You can group conversations into a Microsoft 365 Copilot notebook.\n2. You can add a Microsoft 365 Copilot conversation as a knowledge source to a Copilot agent.\n3. You can add instructions to a Microsoft 365 Copilot notebook to tell Copilot how to respond.", "answer": "1. Yes\n2. No\n3. Yes"}, {"id": 38, "question": "Q38. You are using Microsoft 365 Copilot to enhance your productivity in Microsoft Excel.\nWhich two tasks can you achieve by using Copilot in Excel?", "choices": "A. Customize the conditional formatting rules for your data.\nB. Insert a custom chart that has specific formatting.\nC. Generate a summary of key insights from your data.\nD. Build a pivot table based on your data.", "answer": "C. Generate a summary of key insights from your data.\nD. Build a pivot table based on your data."}, {"id": 39, "question": "Q39. Select the answer that correctly completes the sentence.\nFrom Microsoft 365 Copilot, if you want to aggregate data and produce charts from the data, you should use ...", "choices": "the Analyst agent.\na notebook.\na page.\nthe Researcher agent.", "answer": "the Analyst agent."}, {"id": 40, "question": "Q40. You are creating an agent in the Microsoft 365 Copilot app. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. You can configure the agent to search shared mailboxes.\n2. You can use natural language prompts to create the agent.\n3. You can configure the agent to use another agent as a knowledge source.", "answer": "1. No\n2. Yes\n3. No"}, {"id": 41, "question": "Q41. You are using Microsoft 365 Copilot to enhance your productivity in Microsoft Teams.\nWhich two tasks can you achieve by using Copilot in Teams?", "choices": "A. Mute and unmute participants in a meeting based on their location.\nB. Create a custom background and add the background to your video calls.\nC. Create a meeting summary, including key decisions and action items.\nD. Draft a response to a channel message based on the context of the conversation.", "answer": "C. Create a meeting summary, including key decisions and action items.\nD. Draft a response to a channel message based on the context of the conversation."}, {"id": 42, "question": "Q42. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Microsoft 365 Copilot uses your business data to train underlying AI models.\n2. Microsoft 365 Copilot automatically assigns permissions to resources, so that users can find information more easily.\n3. Microsoft 365 Copilot uses the same underlying data access controls as other Microsoft 365 services to ensure that users are presented with only information to which they have access.", "answer": "1. No\n2. No\n3. Yes"}, {"id": 43, "question": "Q43. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Agents that you create in the Microsoft 365 Copilot app are shared automatically with users in your organization.\n2. If you create an agent in the Microsoft 365 Copilot app, you can interact with the agent by using Microsoft Teams.\n3. If you create an agent in the Microsoft 365 Copilot app and share the agent with a user, the user can modify the agent instructions.", "answer": "1. No\n2. Yes\n3. No"}, {"id": 44, "question": "Q44. You have a Microsoft Excel workbook open that contains a table. The table contains sales data and the following\ncolumns:\n+ OrderDate\n* OrderNumber\n* Amount\nYou plan to use Microsoft Copilot in Excel to generate a monthly summary of the sales data in the table. What should you include in the prompt to generate an effective summary?", "choices": "A. the desired format of the response\nB. a specific cell range from the worksheet\nC. the file name of the workbook\nD. the clear goal of the summary\nE. a formula to calculate monthly totals", "answer": "D. the clear goal of the summary"}, {"id": 45, "question": "Q45. You create an agent in the Microsoft 365 Copilot app by using a template. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. You can share the agent with external users.\n2. You can choose which knowledge sources the agent can use.\n3. You can share the agent with users in your organization.", "answer": "1. No\n2. Yes\n3. Yes"}, {"id": 46, "question": "Q46. You are creating a custom agent in the Microsoft 365 Copilot app for the marketing team at your company. The agent will be used to produce marketing collateral, including copy, logos and artwork.\nWhat should you add to the agent?", "choices": "A. code interpreter\nB. image generator\nC. asuggested prompt\nD. a template", "answer": "B. image generator"}, {"id": 47, "question": "Q47. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Scheduled prompts can be web-grounded.\n2. Scheduled prompts can run a maximum of once per day.\n3. Scheduled prompts can run up to a maximum of 15 times.", "answer": "1. Yes\n2. No\n3. Yes"}, {"id": 48, "question": "Q48. What are two limitations of prompt scheduling in Microsoft 365 Copilot? To answer, select the appropriate options in the answer area.\nYou can schedule the prompt to run as often as:\n\nThe maximum number of times that a scheduled prompt can run is:", "choices": "Once a hour\nOnce per day\nOnce per week\n\n15 times\n365 times\nUnlimited", "answer": "Once per day\n15 times"}, {"id": 49, "question": "Q49. You are evaluating the features of Microsoft 365 Copilot notebooks. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. You can create an agent from a notebook.\n2. You can generate an audio overview of a notebook.\n3. Copilot continually adds new references to notebooks.", "answer": "1. No\n2. Yes\n3. Yes"}, {"id": 50, "question": "Q50. You use Microsoft 365 Copilot. Which two factors should you consider when creating an effective prompt?", "choices": "A. using acronyms in the prompt\nB. providing a clear goal in the prompt\nC. keeping the prompt generic\nD. adding context to the prompt\nE. using a broad range of instructions in the prompt", "answer": "B. providing a clear goal in the prompt\nD. adding context to the prompt"}, {"id": 51, "question": "Q51. A colleague from another company shares a link to a prompt. When you select the link, you receive the following\nresponse: \"Prompt not found. Sorry, it looks like the prompt is no longer available.\"\nWhat is a possible cause of the response?", "choices": "A. The prompt is outdated.\nB. The prompt is outside of your organization.\nC. The prompt contains a reference to a file that you do NOT have access to.\nD. The prompt is a scheduled prompt.\nE. The prompt contains a file that has a sensitivity label applied.", "answer": "B. The prompt is outside of your organization."}, {"id": 52, "question": "Q52. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Prompt injection can cause data exposure and unintended system behavior.\n2. Prompt injection can be used to embed malicious or harmful instructions.\n3. Prompt injection is a security vulnerability unique to generative AI systems that interpret and respond to natural language inputs.", "answer": "1. Yes\n2. Yes\n3. Yes"}, {"id": 53, "question": "Q53. Select the answer that correctly completes the sentence.\nIf you start a temporary chat in Microsoft 365 Copilot and then start a new chat, all prompts and responses from the\ntemporary chat will be …", "choices": "deleted immediately.\ndeleted after one hour.\nmoved to a private notebook.\nmoved to your Microsoft OneDrive.", "answer": "deleted immediately."}, {"id": 54, "question": "Q54. You are creating a prompt in Microsoft 365 Copilot to get information about a proposal. You need to ensure that the response is grounded in the proposal's information.\nWhat is the best approach to achieve the goal?", "choices": "A. Add context about the intended audience.\nB. Instruct Copilot to rely on its training data to infer proposal details.\nC. Reference the proposal content in the prompt.\nD. Add a specific goal that you want Copilot to accomplish.", "answer": "C. Reference the proposal content in the prompt."}, {"id": 55, "question": "Q55. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. You can review Microsoft 365 Copilot activity history from the My Account portal.\n2. When you delete Microsoft 365 Copilot activity history, you also immediately delete all associated notebooks and pages.\n3. Users can delete their entire Microsoft 365 Copilot activity history, including their prompts and the responses Copilot returns.", "answer": "1. Yes\n2. No\n3. Yes"}, {"id": 56, "question": "Q56. You need to access Microsoft 365 Copilot from a web browser. Which URL should you use?", "choices": "A. https://m365.cloud. microsoft\nB. https://copilotstudio.microsoft.com\nC. https://myapps.microsoft.com\nD. https://myaccount.microsoft.com", "answer": "A. https://m365.cloud.microsoft"}, {"id": 57, "question": "Q57. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Microsoft 365 Copilot can use its own model knowledge to make a prompt response more specific.\n2. Microsoft 365 Copilot can use business data to provide additional context and make a prompt response more specific.\n3. Microsoft 365 Copilot can use the latest information from the web to provide additional context and make a prompt more specific.", "answer": "1. Yes\n2. Yes\n3. Yes"}, {"id": 58, "question": "Q58. You have a Microsoft 365 Copilot license. You plan to run several prompts.\nWhat should you use to ensure that Copilot generates the best response for each prompt?\nPrompt1:\nExplain the differences between Contoso, Ltd. and Litware, Inc. Include sources and a table of the differences. Provide insights into why the differences exist. \n\nPrompt2:\nFrom /Sales_2022.xIsx, /Sales_2023.xlsx, and /Sales_2024.xlsx, create a pivot table of revenue by region and product, highlight month-over-month changes greater than 10%, and recommend three follow-up analyses.\n\nPrompt3:\nGenerate a structured action plan from an ongoing meeting chat, grouping tasks by functional area, identifying owners where mentioned, and including any implied deadlines or dependencies.", "choices": "The Analyst Agent\nChat\nThe Researcher Agent\n\nThe Analyst Agent\nChat\nThe Researcher Agent\n\nThe Analyst Agent\nChat\nThe Researcher Agent", "answer": "The Researcher Agent\nThe Analyst Agent\nChat"}, {"id": 59, "question": "Q59. You have an open Microsoft Word document that has a sensitivity label named Highly Confidential applied. From Microsoft PowerPoint, you plan to use Microsoft 365 Copilot to generate a presentation of the Word document. What will be the result?", "choices": "A. Copilot will generate the presentation and will NOT apply a label.\nB. Copilot will generate the presentation and will prompt you for a label.\nC. Copilot will be unable to generate the presentation. \nD. Copilot will generate the presentation and apply the Highly Confidential label.", "answer": "D. Copilot will generate the presentation and apply the Highly Confidential label."}, {"id": 60, "question": "Q60. You need to ensure that Microsoft 365 Copilot responds to you in a professional manner that is appropriate to your field. What is the best approach to achieve the goal?", "choices": "A. From Settings, configure Copilot Memory.\nB. In the conversation, create a sample prompt and save it to the Copilot Prompt Gallery.\nC. In the conversation, attach an example to your prompts.\nD. From Settings, configure Custom instructions.", "answer": "D. From Settings, configure Custom instructions."}, {"id": 61, "question": "Q61. You run a saved prompt and receive the following response: \"You asked for a summary of File.docx. However, the file appears to be either empty, corrupted, or in a format that | cannot process.\"\nWhat is a possible cause of the response?", "choices": "A. You did NOT schedule the prompt to run.\nB. You ran the prompt from a web app instead of a desktop app.\nC. You used the wrong agent to run the prompt.\nD. You do NOT have access to the file.", "answer": "D. You do NOT have access to the file."}, {"id": 62, "question": "Q62. You have a Microsoft 365 subscription. You do NOT have a Microsoft 365 Copilot license.\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Microsoft 365 Copilot Chat lets you upload documents from your local computer.\n2. Microsoft 365 Copilot Chat is included with Microsoft 365 Business Standard.\n3. Microsoft 365 Copilot Chat lets you create and use agents that can access Microsoft SharePoint folders.", "answer": "1. Yes\n2. Yes\n3. No"}, {"id": 63, "question": "Q63. You are using Microsoft 365 Copilot to plan a trip and have asked Copilot to remember several details about the trip. You cancel the trip plans.\nYou need to ensure that Copilot forgets the details. What should you do?", "choices": "A. From the My Account portal, delete the Copilot activity history.\nB. From Copilot, delete memories.\nC. From Copilot, delete custom instructions.\nD. From Copilot, delete all the conversation about the trip.", "answer": "B. From Copilot, delete memories."}, {"id": 64, "question": "Q64. You need to improve prompt-grounding during a Microsoft 365 Copilot conversation.\nWhat is the best approach to achieve the goal?", "choices": "A. Use shorter prompts.\nB. Provide the desired output format.\nC. Avoid technical jargon.\nD. Reference specific files.", "answer": "D. Reference specific files."}, {"id": 65, "question": "Q65. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. When you submit the same prompt to Microsoft 365 Copilot multiple times and are grounded in web data, the response will always be identical.\n2. When you submit the same prompt to Microsoft 365 Copilot multiple times and are grounded in your own data, the response will always be identical.\n3. When you submit the same prompt to Microsoft 365 Copilot multiple times and are grounded only in the model’s knowledge, the response will always be identical.", "answer": "1. No\n2. No\n3. No"}, {"id": 66, "question": "Q66. You have a Microsoft 365 Copilot license. You plan to run several prompts.\nWhat should you use to ensure that Copilot generates the best response for each prompt?\nPrompt1:\nFrom /Feedback_Q1-Q3.xlsx, consolidate all sheets, categorize the feedback by theme, compute positive and negative sentiment by product line, and visualize the top five drivers.\n\nPrompt2:\nUsing the SharePoint folder “/Go-To-Market/2025” and reputable web sources, produce a one-page brief on AI trends that includes five key insights, citations, and callouts on gaps or risks.\n\nPrompt3:\nFora VP, prepare a polished executive email that distills the strategic priorities, critical decisions, and immediate next steps from the attached Strategic_Plan_2025.docx, ensuring the tone aligns with senior leadership \ncommunication standards.", "choices": "The Analyst Agent\nChat\nThe Researcher Agent\n\nThe Analyst Agent\nChat\nThe Researcher Agent\n\nThe Analyst Agent\nChat\nThe Researcher Agent", "answer": "The Analyst Agent\nThe Researcher Agent\nChat"}, {"id": 67, "question": "Q67. Select the answer that correctly completes the sentence.\nFrom Microsoft 365 Copilot, you can use … |to help users begin conversations with an agent and guide them to use the agent more effectively.", "choices": "agent settings\ncapabilities\ninstructions\nsuggested prompts", "answer": "suggested prompts"}, {"id": 68, "question": "Q68. Select the answer that correctly completes the sentence.\nYou are using Microsoft 365 Copilot during a Microsoft Teams meeting. After the meeting, you can only … if the meeting was transcribed.", "choices": "schedule a follow-up meeting\ncreate a summary of the meeting chat\nidentify content that was attached to the meeting\ngenerate a recap of what was discussed during the meeting", "answer": "generate a recap of what was discussed during the meeting"}, {"id": 69, "question": "Q69. You use Microsoft 365 Copilot to create a proposal in Microsoft Word based on a document in a Microsoft SharePoint library. You need to ensure that the information cited in the proposal is accurate. What is the best approach to achieve the goal?", "choices": "A. Create an agent that contains your organization's editorial standards and use the agent to verify the citations.\nB. Use Copilot in Word to verify the citations.\nC. Create a notebook that contains all the reference material and use the notebook to verify the citations.\nD. Manually verify the citations in the generated content.", "answer": "D. Manually verify the citations in the generated content."}, {"id": 70, "question": "Q70. You are comparing the difference between Microsoft 365 Copilot and Microsoft 365 Copilot Chat. What is available in both versions?", "choices": "A. the Researcher agent\nB. Copilot Pages\nC. Copilot Notebooks", "answer": "B. Copilot Pages"}, {"id": 71, "question": "Q71. You receive several images from a colleague. You suspect that the images were generated by using Microsoft 365\nCopilot. What can you use to verify whether the images were AI-generated?", "choices": "A. file names\nB. watermarks\nC. content credentials\nD. file descriptions", "answer": "C. content credentials"}, {"id": 72, "question": "Q72. You open Microsoft 365 Copilot as shown in the following exhibit.\nWhat can you infer about the Standings conversation?", "choices": "A. The conversation contains only anonymous data.\nB. The conversation contains a verified response.\nC. The conversation was added to a notebook.\nD. The conversation contains a scheduled prompt.\nE. The conversation was shared.", "answer": "E. The conversation was shared."}, {"id": 73, "question": "Q73. You are a marketing assistant preparing for a budget meeting with your manager.\nYou need to evaluate key spending and performance trends from the last year to understand which marketing channels deliver the best return on investment (ROI).\nWhat should you use in Microsoft 365 Copilot to achieve the goal?", "choices": "A. the Analyst agent\nB. Chat\nC. the Researcher agent\nD. a notebook", "answer": "A. the Analyst agent"}, {"id": 74, "question": "Q74. You create a Microsoft 365 Copilot notebook and add a file named Process.docx from a Microsoft SharePoint site as a reference.\nYesterday, a user updated Process.docx in the SharePoint site. What will occur when you chat in the notebook?", "choices": "A. The chat will reference only the original version of Process.docx.\nB. The chat will reference the most recent version of Process.docx.\nC. The chat will reference both versions of Process.docx.", "answer": "B. The chat will reference the most recent version of Process.docx."}, {"id": 75, "question": "Q75. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Microsoft 365 Copilot uses contextual information from your organization to suggest prompts.\n2. Microsoft 365 Copilot can use contextual information from your organization to train the large language model (LLM).\n3. Microsoft 365 Copilot uses contextual information from your organization to augment a prompt before sending it to the large language model (LLM).", "answer": "1. Yes\n2. No\n3. Yes"}, {"id": 76, "question": "Q76. You have a Microsoft 365 Copilot conversation as shown in the following exhibit.\nDoc! docx tell me more about this doc\n@® Copilot K\nThe document “Doc1.docx” contains a short and repetitive set of phrases, primarily focused on the\ntheme of an AI Partner Training Day. Here's a quick summary of its contents:\n» Document Overview:\n+ Keywords/Phrases:\n° Test\n© Demo\n© Certification\n* Repeated mentions of \"AI Partner Training Day - Demo”\nUse the drop-down menus to select the answer choice that completes the statement\nbased on the information presented in the graphic.\nDoc1.docx ...", "choices": "is in a notebook\nhas a sensitivity label applied\nis not a supported file type\nis not accessible outside of your organization", "answer": "has a sensitivity label applied"}, {"id": 77, "question": "Q77. You plan to summarize a proposal for a partnership between your company and another company.\nYou need to use Microsoft 365 Copilot to summarize the information in the proposal as a bulleted list of three to five key points for a project kickoff meeting. Each bullet point must be concise and simply worded.\nWhich two details should you include in the prompt?", "choices": "A. alist of contact details for key stakeholders of the partnership\nB. profiles of both companies generated by using the Researcher agent\nC. a specific knowledge source to ground the response\nD. concise instructions for what to do with the proposal", "answer": "C. a specific knowledge source to ground the response\nD. concise instructions for what to do with the proposal"}, {"id": 78, "question": "Q78. Select the answer that correctly completes the sentence.\nYou generate a report by using the Researcher agent in Microsoft 365 Copilot.\nYou can use … to save and edit the response.", "choices": "an agent\na conversation\na notebook\na page", "answer": "a page"}, {"id": 79, "question": "Q79. Select the answer that correctly completes the sentence.\nFrom the Microsoft 365 My Account portal, if you select\nDelete history for Copilot activity, you can delete ...", "choices": "a specific conversation\na specific date range of activity\nall Microsoft 365 Copilot activity\nall conversations with a specific agent", "answer": "all Microsoft 365 Copilot activity"}, {"id": 80, "question": "Q80. You are creating a custom analytics agent in the Microsoft 365 Copilot app. The agent will use Microsoft Excel files that contain sales data as knowledge.\nYou need to ensure that the agent can create visualizations, perform mathematical operations, create aggregations, and analyze the data in the files.\nWhat should you add to the agent?", "choices": "A. a suggested prompt\nB. code interpreter\nC. image generator\nD. a template", "answer": "B. code interpreter"}, {"id": 81, "question": "Q81. You are a merchandiser who is planning for the upcoming season.\nYou prompt Microsoft 365 Copilot to suggest which products to stock based on historical sales data. Without reviewing the\nsuggestions or checking current market trends, you place a large order based solely on the output of Copilot.\nWhat is this an example of?", "choices": "A. verification\nB. overreliance\nC. fabrication\nD. prompt injection", "answer": "B. overreliance"}, {"id": 82, "question": "Q82. Select the answer that correctly completes the sentence.\n… in Microsoft 365 Copilot ensures that business data stays within a Microsoft 365 tenant and is not used to train AI models.", "choices": "The Common Data Model\nEnterprise Data Protection (EDP)\nSensitivity labels\nZero Trust", "answer": "Enterprise Data Protection (EDP)"}, {"id": 83, "question": "Q83. You have several pages in Microsoft 365 Copilot related to the research you are doing for a new product. You need to simplify your ability to have many different Copilot conversations about the pages.\nWhat should you do first?", "choices": "A. Create a story.\nB. Add the pages to a notebook.\nC. Add the pages to a conversation.\nD. Download the pages locally.", "answer": "B. Add the pages to a notebook."}, {"id": 84, "question": "Q84. You use Microsoft 365 Copilot.\nYou discover that you had a conversation that used a knowledge source that contains confidential information. You need to delete the conversation data without requiring administrative approval. You must retain your other conversations, if possible.\nWhat should you use?", "choices": "A. The Microsoft 365 admin center\nB. The My Account portal in Microsoft 365 Copilot\nC. The Microsoft Purview compliance portal\nD. The Microsoft 365 Copilot app", "answer": "D. The Microsoft 365 Copilot app"}, {"id": 85, "question": "Q85. You use Microsoft 365 Copilot.\nYou need to delete all your conversations by using the least amount of effort.\nWhat is the best approach to achieve the goal?", "choices": "A. The Microsoft 365 Copilot web app\nB. The My Account portal in Microsoft 365\nC. The Microsoft 365 Copilot desktop app\nD. The Settings app in Windows 11", "answer": "B. The My Account portal in Microsoft 365"}, {"id": 86, "question": "Q86. You are creating an agent in the Microsoft 365 Copilot app. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. You can configure the agent to search shared mailboxes.\n2. You can use natural language prompts to create the agent.\n3. You can configure the agent to use another agent as a knowledge source.", "answer": "1. No\n2. Yes\n3. No"}, {"id": 87, "question": "Q87. In a Microsoft 365 Copilot conversation, you generate a report, and then edit the report in a page. You need to\ncollaborate with a colleague on the report.\nWhat are two ways to achieve the goal?", "choices": "A. Mention the colleague in the page.\nB. Open the page in Microsoft Word.\nC. Share the page link.\nD. Add the page to a notebook.", "answer": "A. Mention the colleague in the page.\nC. Share the page link."}, {"id": 88, "question": "Q88. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. You can add a Microsoft Teams chat as a knowledge source to a Microsoft 365 Copilot agent.\n2. You can use a Microsoft 365 Copilot notebook to collaborate with users in your organization.\n3. You can use an image file, such as a JPG file, as a knowledge source for a Microsoft 365 Copilot agent.", "answer": "1. Yes\n2. No\n3. Yes"}, {"id": 89, "question": "Q89. You have an open Microsoft 365 Copilot conversation.\nYou need to chat with an agent named Agent‘ during the conversation. What should you enter to call Agent1?", "choices": "A. [Agent1]\nB. #Agent1\nC. /Agent1\nD. @Agent1", "answer": "D. @Agent"}, {"id": 90, "question": "Q90. Select the answer that correctly completes the sentence.\nFrom Microsoft 365, you … the Researcher agent.", "choices": "cannot modify the settings of\ncan modify the agent instructions of\ncan add an additional suggested prompt to\ncan delete one of the suggested prompts from", "answer": "cannot modify the settings of"}, {"id": 91, "question": "Q91. You plan to create an agent by using the Microsoft 365 Copilot app.\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. The agent will be available in Microsoft Word.\n2. The agent can be shared with other users in your organization.\n3. The agent can include complex workflows that use third-party connectors.", "answer": "1. Yes\n2. Yes\n3. No"}, {"id": 92, "question": "Q92. You attend many Microsoft Teams meetings.\nYou want to ensure that you can catch up on key points and next steps after each meeting. Which Microsoft 365 Copilot\nfeature should you use after the meetings?", "choices": "A. Recap\nB. Meeting Whiteboard\nC. Meeting info\nD. Thread summaries", "answer": "A. Recap"}, {"id": 93, "question": "Q93. You run a prompt by using the Researcher agent in Microsoft 365 Copilot.\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. You can continue the conversation in Copilot in Word.\n2. You can continue the conversation in Copilot for Teams.\n3. You can continue the conversation in Copilot in Outlook.", "answer": "1. Yes\n2. Yes\n3. Yes"}, {"id": 94, "question": "Q94. You create a prompt and add several files from your Microsoft OneDrive.\nYou share the prompt to a user by using email. What occurs when the user uses the prompt?", "choices": "A. The user is granted access to the files automatically and can run the prompt.\nB. The files are removed from the shared prompt, and the user must add the files manually before they can run the\nprompt.\nC. The user is prompted to request access to the files when they attempt to run the prompt.\nD. The user can run the prompt successfully only if they have access to the files in your OneDrive.", "answer": "D. The user can run the prompt successfully only if they have access to the files in your OneDrive."}, {"id": 95, "question": "Q95. Select the answer that correctly completes the sentence.\n… enables organizations to apply governance policies to conversations generated by using Microsoft 365 Copilot.", "choices": "Microsoft Defender for Cloud\nMicrosoft Entra ID\nMicrosoft Intune\nMicrosoft Purview", "answer": "Microsoft Purview"}, {"id": 96, "question": "Q96. You receive the following response to a prompt: “Sorry, it looks like | can’t respond to this. Let’s try a different topic.”\nWhat is a possible cause of the response?", "choices": "A. The prompt is too vague to illicit a response.\nB. The prompt contains language that violates safety guidelines.\nC. The prompt contains more than five requests.\nD. The prompt is larger than the allowed context window.", "answer": "B. The prompt contains language that violates safety guidelines."}, {"id": 97, "question": "Q97. You plan to use a notebook in Microsoft 365 Copilot. What is the purpose of a notebook?", "choices": "A. to create a transcript of a conversation that you can easily email to other users\nB. to provide a private location that can be used to organize reference materials across related conversations\nC. to generate a summary of all the interactions you had with Copilot during a specific conversation", "answer": "B. to provide a private location that can be used to organize reference materials across related conversations"}, {"id": 98, "question": "Q98. For each of the following statements, select Yes if the statement is true. Otherwise, select No.", "choices": "1. Agents that you create in the Microsoft 365 Copilot app are shared automatically with users in your organization.\n2. If you create an agent in the Microsoft 365 Copilot app, you can interact with the agent by using Microsoft Teams.\n3. If you create an agent in the Microsoft 365 Copilot app and share the agent with a user, the user can modify the agent instructions.", "answer": "1. No\n2. Yes\n3. No"}, {"id": 99, "question": "Q99. Select the answer that correctly completes the sentence.\nIf you start a temporary chat in Microsoft 365 Copilot and then start a new chat, all prompts and responses from the\ntemporary chat will be …", "choices": "deleted immediately.\ndeleted after one hour.\nmoved to a private notebook.\nmoved to your Microsoft OneDrive.", "answer": "deleted immediately."}, {"id": 100, "question": "Q100. You need to improve prompt-grounding during a Microsoft 365 Copilot conversation.\nWhat is the best approach to achieve the goal?", "choices": "A. Use shorter prompts.\nB. Provide the desired output format.\nC. Avoid technical jargon.\nD. Reference specific files.", "answer": "D. Reference specific files."}]</script>
+  <script>
+    const QUESTIONS = JSON.parse(document.getElementById('questions-data').textContent);
+    const STORAGE_KEY = 'ab730_exam_practice_from_sheet_v2';
+    let state = loadState();
+    let filtered = QUESTIONS.slice();
+    let currentPos = 0;
+    let currentSelections = new Set();
+    let currentYesNo = {};
+
+    const el = {
+      statAnswered: document.getElementById('statAnswered'),
+      statCorrect: document.getElementById('statCorrect'),
+      statWrong: document.getElementById('statWrong'),
+      statPercent: document.getElementById('statPercent'),
+      progressBar: document.getElementById('progressBar'),
+      mode: document.getElementById('mode'),
+      search: document.getElementById('search'),
+      questionList: document.getElementById('questionList'),
+      counter: document.getElementById('counter'),
+      starBtn: document.getElementById('starBtn'),
+      copyBtn: document.getElementById('copyBtn'),
+      contentArea: document.getElementById('contentArea'),
+      randomBtn: document.getElementById('randomBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      prevBtn: document.getElementById('prevBtn'),
+      nextBtn: document.getElementById('nextBtn'),
+      showBtn: document.getElementById('showBtn'),
+      markCorrectBtn: document.getElementById('markCorrectBtn'),
+      markWrongBtn: document.getElementById('markWrongBtn'),
+    };
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        return saved && typeof saved === 'object' ? saved : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function getQState(id) {
+      if (!state[id]) state[id] = { result: null, attempts: 0, starred: false, lastAnswer: '', selected: [] };
+      return state[id];
+    }
+
+    function normalizeText(s) {
+      return (s || '')
+        .toString()
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
+    }
+
+    function escapeHtml(s) {
+      return String(s || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function nonEmptyLines(text) {
+      return String(text || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+    }
+
+    function parseLetterOptions(text) {
+      const options = [];
+      let cur = null;
+      for (const raw of String(text || '').split(/\r?\n/)) {
+        const line = raw.trim();
+        if (!line) continue;
+        const m = line.match(/^([A-H])\s*[\.)]\s*(.*)$/i);
+        if (m) {
+          if (cur) options.push(cur);
+          cur = { key: m[1].toUpperCase(), text: m[2].trim(), label: m[1].toUpperCase() };
+        } else if (cur) {
+          cur.text += '\n' + line;
+        }
+      }
+      if (cur) options.push(cur);
+      const seen = new Set();
+      return options.filter(o => {
+        if (seen.has(o.key)) return false;
+        seen.add(o.key);
+        return true;
+      });
+    }
+
+    function parseAnswerLetters(answer) {
+      const letters = [];
+      const lines = String(answer || '').split(/\r?\n/);
+      for (const line of lines) {
+        const m = line.trim().match(/^([A-H])\s*[\.)]/i);
+        if (m && !letters.includes(m[1].toUpperCase())) letters.push(m[1].toUpperCase());
+      }
+      if (!letters.length) {
+        const loose = String(answer || '').match(/\b[A-H]\b/g) || [];
+        for (const l of loose) {
+          const up = l.toUpperCase();
+          if (!letters.includes(up)) letters.push(up);
+        }
+      }
+      return letters;
+    }
+
+    function parseNumberedStatements(text) {
+      const rows = [];
+      let cur = null;
+      for (const raw of String(text || '').split(/\r?\n/)) {
+        const line = raw.trim();
+        if (!line) continue;
+        const m = line.match(/^(\d+)\s*[\.)]\s*(.*)$/);
+        if (m) {
+          if (cur) rows.push(cur);
+          cur = { num: m[1], text: m[2].trim() };
+        } else if (cur) {
+          cur.text += '\n' + line;
+        }
+      }
+      if (cur) rows.push(cur);
+      return rows;
+    }
+
+    function parseNumberedYesNoAnswers(answer) {
+      const out = {};
+      for (const line of String(answer || '').split(/\r?\n/)) {
+        const m = line.trim().match(/^(\d+)\s*[\.)]\s*(Yes|No)\s*$/i);
+        if (m) out[m[1]] = m[2][0].toUpperCase() + m[2].slice(1).toLowerCase();
+      }
+      return out;
+    }
+
+    function parsePlainOptions(text) {
+      return nonEmptyLines(text).map((line, idx) => ({
+        key: String(idx + 1),
+        label: String(idx + 1),
+        text: line
+      }));
+    }
+
+    function answerPlainKeys(q, options) {
+      const ansLines = nonEmptyLines(q.answer);
+      const keys = [];
+      for (const ans of ansLines) {
+        const idx = options.findIndex(o => normalizeText(o.text) === normalizeText(ans));
+        if (idx >= 0 && !keys.includes(options[idx].key)) keys.push(options[idx].key);
+      }
+      return keys;
+    }
+
+    function getQuestionType(q) {
+      const yesNoAnswers = parseNumberedYesNoAnswers(q.answer);
+      const statements = parseNumberedStatements(q.choices);
+      if (Object.keys(yesNoAnswers).length && statements.length) {
+        return { type: 'yesno', statements, yesNoAnswers };
+      }
+
+      const letterOptions = parseLetterOptions(q.choices);
+      const answerLetters = parseAnswerLetters(q.answer);
+      if (letterOptions.length >= 2 && answerLetters.length && answerLetters.every(l => letterOptions.some(o => o.key === l))) {
+        return { type: answerLetters.length > 1 ? 'multi' : 'single', options: letterOptions, correctKeys: answerLetters };
+      }
+
+      const plainOptions = parsePlainOptions(q.choices);
+      const plainKeys = answerPlainKeys(q, plainOptions);
+      if (plainOptions.length >= 2 && plainKeys.length) {
+        return { type: plainKeys.length > 1 ? 'multi' : 'single', options: plainOptions, correctKeys: plainKeys };
+      }
+
+      return { type: 'manual' };
+    }
+
+    function filteredQuestions() {
+      const mode = el.mode.value;
+      const term = normalizeText(el.search.value);
+      return QUESTIONS.filter(q => {
+        const st = getQState(q.id);
+        if (mode === 'unanswered' && st.result) return false;
+        if (mode === 'wrong' && st.result !== 'wrong') return false;
+        if (mode === 'starred' && !st.starred) return false;
+        if (term) {
+          const hay = normalizeText(q.question + ' ' + q.choices + ' ' + q.answer + ' ' + q.id);
+          if (!hay.includes(term)) return false;
+        }
+        return true;
+      });
+    }
+
+    function refreshFilter(keepId = null) {
+      filtered = filteredQuestions();
+      if (keepId) {
+        const idx = filtered.findIndex(q => q.id === keepId);
+        currentPos = idx >= 0 ? idx : 0;
+      } else {
+        currentPos = Math.min(currentPos, Math.max(0, filtered.length - 1));
+      }
+      renderList();
+      renderCurrent();
+      renderStats();
+    }
+
+    function renderStats() {
+      const states = QUESTIONS.map(q => getQState(q.id));
+      const answered = states.filter(s => s.result).length;
+      const correct = states.filter(s => s.result === 'correct').length;
+      const wrong = states.filter(s => s.result === 'wrong').length;
+      const percent = answered ? Math.round(correct / answered * 100) : 0;
+      el.statAnswered.textContent = answered;
+      el.statCorrect.textContent = correct;
+      el.statWrong.textContent = wrong;
+      el.statPercent.textContent = percent + '%';
+      el.progressBar.style.width = Math.round(answered / QUESTIONS.length * 100) + '%';
+    }
+
+    function shortText(q) {
+      return q.question.replace(/\s+/g, ' ').replace(/^Q\d+\.\s*/i, '').slice(0, 82);
+    }
+
+    function renderList() {
+      if (!filtered.length) {
+        el.questionList.innerHTML = '<div class="empty">Không có câu nào trong bộ lọc này.</div>';
+        return;
+      }
+      const cur = filtered[currentPos];
+      el.questionList.innerHTML = filtered.map((q, i) => {
+        const st = getQState(q.id);
+        const cls = st.result === 'correct' ? 'good' : st.result === 'wrong' ? 'bad' : 'blank';
+        const symbol = st.result === 'correct' ? '✓' : st.result === 'wrong' ? '×' : q.id;
+        return `<button class="qitem ${cur && q.id === cur.id ? 'active' : ''}" data-id="${q.id}" type="button">
+          <span class="badge ${cls}">${symbol}</span>
+          <span class="tiny">${escapeHtml(shortText(q))}</span>
+          <span class="star ${st.starred ? 'on' : ''}">★</span>
+        </button>`;
+      }).join('');
+      el.questionList.querySelectorAll('.qitem').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.id);
+          currentPos = filtered.findIndex(q => q.id === id);
+          renderCurrent();
+          renderList();
+        });
+      });
+    }
+
+    function renderOptionButtons(q, info, st) {
+      const selected = new Set(Array.isArray(st.selected) ? st.selected : []);
+      currentSelections = selected;
+      const multiHint = info.type === 'multi' ? '<div class="hint">Câu này có nhiều đáp án. Chọn đủ các đáp án rồi bấm <b>Kiểm tra</b>.</div>' : '';
+      const checkBtn = info.type === 'multi' ? '<div class="actions" style="margin-top:12px"><button class="btn primary" id="checkMultiBtn" type="button">Kiểm tra</button></div>' : '';
+      return `
+        <div class="choices-title">Lựa chọn</div>
+        <div class="options">
+          ${info.options.map(opt => `<button class="option ${selected.has(opt.key) ? 'selected' : ''}" data-key="${escapeHtml(opt.key)}" type="button">
+            <span class="letter">${escapeHtml(opt.label)}</span>
+            <span>${escapeHtml(opt.text)}</span>
+          </button>`).join('')}
+        </div>
+        ${multiHint}
+        ${checkBtn}
+      `;
+    }
+
+    function renderYesNo(q, info, st) {
+      currentYesNo = st.yesno && typeof st.yesno === 'object' ? {...st.yesno} : {};
+      return `
+        <div class="choices-title">Chọn Yes / No</div>
+        <div class="yesno-grid">
+          ${info.statements.map(row => `
+            <div class="yn-row" data-num="${escapeHtml(row.num)}">
+              <div class="yn-statement"><b>${escapeHtml(row.num)}.</b> ${escapeHtml(row.text)}</div>
+              <div class="yn-buttons">
+                <button class="yn ${currentYesNo[row.num] === 'Yes' ? 'selected' : ''}" data-num="${escapeHtml(row.num)}" data-value="Yes" type="button">Yes</button>
+                <button class="yn ${currentYesNo[row.num] === 'No' ? 'selected' : ''}" data-num="${escapeHtml(row.num)}" data-value="No" type="button">No</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="actions" style="margin-top:12px"><button class="btn primary" id="checkYesNoBtn" type="button">Kiểm tra</button></div>
+      `;
+    }
+
+    function renderManual(q, st) {
+      return `
+        <div class="choices-title">Nội dung / lựa chọn từ sheet</div>
+        <div class="raw-choices">${escapeHtml(q.choices)}</div>
+        <textarea id="freeAnswer" placeholder="Nhập câu trả lời của bạn, sau đó bấm Hiện đáp án để tự chấm.">${escapeHtml(st.lastAnswer || '')}</textarea>
+      `;
+    }
+
+    function renderCurrent() {
+      const q = filtered[currentPos];
+      currentSelections = new Set();
+      currentYesNo = {};
+      if (!q) {
+        el.counter.textContent = 'Không có câu';
+        el.contentArea.innerHTML = '<div class="empty">Hãy đổi bộ lọc hoặc reset tìm kiếm.</div>';
+        el.starBtn.textContent = '☆ Đánh dấu';
+        return;
+      }
+
+      const st = getQState(q.id);
+      const info = getQuestionType(q);
+      el.counter.textContent = `Câu ${q.id} / ${QUESTIONS.length}`;
+      el.starBtn.textContent = st.starred ? '★ Đã đánh dấu' : '☆ Đánh dấu';
+
+      let interaction = '';
+      if (info.type === 'single' || info.type === 'multi') {
+        interaction = renderOptionButtons(q, info, st);
+      } else if (info.type === 'yesno') {
+        interaction = renderYesNo(q, info, st);
+      } else {
+        interaction = renderManual(q, st);
+      }
+
+      el.contentArea.innerHTML = `
+        <div class="question">${escapeHtml(q.question)}</div>
+        ${interaction}
+        <div class="feedback" id="feedback"></div>
+        <div class="answer-box" id="answerBox">
+          <div class="answer-title">Đáp án đúng</div>
+          <div class="answer-text">${escapeHtml(q.answer)}</div>
+        </div>
+      `;
+
+      if (info.type === 'single' || info.type === 'multi') {
+        el.contentArea.querySelectorAll('.option').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const key = btn.dataset.key;
+            if (info.type === 'single') {
+              currentSelections = new Set([key]);
+              st.selected = [key];
+              saveState();
+              checkOptions(info);
+            } else {
+              if (currentSelections.has(key)) currentSelections.delete(key);
+              else currentSelections.add(key);
+              st.selected = Array.from(currentSelections);
+              saveState();
+              btn.classList.toggle('selected', currentSelections.has(key));
+            }
+          });
+        });
+        const check = document.getElementById('checkMultiBtn');
+        if (check) check.addEventListener('click', () => checkOptions(info));
+      } else if (info.type === 'yesno') {
+        el.contentArea.querySelectorAll('.yn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            currentYesNo[btn.dataset.num] = btn.dataset.value;
+            st.yesno = {...currentYesNo};
+            saveState();
+            el.contentArea.querySelectorAll(`.yn[data-num="${btn.dataset.num}"]`).forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+          });
+        });
+        document.getElementById('checkYesNoBtn').addEventListener('click', () => checkYesNo(info));
+      } else {
+        const ta = document.getElementById('freeAnswer');
+        ta.addEventListener('input', () => {
+          st.lastAnswer = ta.value;
+          saveState();
+        });
+      }
+
+      if (st.result) {
+        showSavedResult(st.result);
+        revealAnswer(false);
+        if (info.type === 'single' || info.type === 'multi') highlightOptions(info);
+        if (info.type === 'yesno') highlightYesNo(info);
+      }
+    }
+
+    function sameSet(a, b) {
+      if (a.size !== b.size) return false;
+      for (const x of a) if (!b.has(x)) return false;
+      return true;
+    }
+
+    function checkOptions(info) {
+      const correct = new Set(info.correctKeys);
+      const selected = new Set(currentSelections);
+      if (!selected.size) {
+        showFeedback('Hãy chọn đáp án trước đã nhé.', 'info');
+        return;
+      }
+      const ok = sameSet(selected, correct);
+      setResult(ok ? 'correct' : 'wrong');
+      showFeedback(ok ? 'Chính xác. Ngon!' : 'Chưa đúng. Xem đáp án bên dưới nhé.', ok ? 'good' : 'bad');
+      highlightOptions(info);
+      revealAnswer(false);
+    }
+
+    function checkYesNo(info) {
+      const expectedNums = Object.keys(info.yesNoAnswers);
+      const missing = expectedNums.filter(n => !currentYesNo[n]);
+      if (missing.length) {
+        showFeedback(`Còn thiếu câu số ${missing.join(', ')}.`, 'info');
+        return;
+      }
+      const ok = expectedNums.every(n => currentYesNo[n] === info.yesNoAnswers[n]);
+      setResult(ok ? 'correct' : 'wrong');
+      showFeedback(ok ? 'Chính xác. Bộ Yes/No này sạch đẹp!' : 'Chưa đúng. Xem đáp án đúng bên dưới nhé.', ok ? 'good' : 'bad');
+      highlightYesNo(info);
+      revealAnswer(false);
+    }
+
+    function setResult(result) {
+      const q = filtered[currentPos];
+      if (!q) return;
+      const st = getQState(q.id);
+      st.result = result;
+      st.attempts = (st.attempts || 0) + 1;
+      saveState();
+      renderStats();
+      renderList();
+    }
+
+    function showSavedResult(result) {
+      showFeedback(result === 'correct' ? 'Đã chấm: Đúng.' : 'Đã chấm: Sai.', result === 'correct' ? 'good' : 'bad');
+    }
+
+    function showFeedback(text, type) {
+      const fb = document.getElementById('feedback');
+      if (!fb) return;
+      fb.textContent = text;
+      fb.className = 'feedback show ' + type;
+    }
+
+    function revealAnswer(markManual = true) {
+      const box = document.getElementById('answerBox');
+      if (box) box.classList.add('show');
+    }
+
+    function highlightOptions(info) {
+      const correct = new Set(info.correctKeys);
+      el.contentArea.querySelectorAll('.option').forEach(btn => {
+        const key = btn.dataset.key;
+        btn.classList.toggle('correct', correct.has(key));
+        btn.classList.toggle('wrong', currentSelections.has(key) && !correct.has(key));
+      });
+    }
+
+    function highlightYesNo(info) {
+      el.contentArea.querySelectorAll('.yn').forEach(btn => {
+        const num = btn.dataset.num;
+        const val = btn.dataset.value;
+        const selected = currentYesNo[num] === val;
+        const correct = info.yesNoAnswers[num] === val;
+        btn.classList.toggle('correct', correct);
+        btn.classList.toggle('wrong', selected && !correct);
+      });
+    }
+
+    function mark(result) {
+      const q = filtered[currentPos];
+      if (!q) return;
+      setResult(result);
+      revealAnswer(false);
+      const info = getQuestionType(q);
+      if (info.type === 'single' || info.type === 'multi') highlightOptions(info);
+      if (info.type === 'yesno') highlightYesNo(info);
+      showFeedback(result === 'correct' ? 'Đã tự chấm đúng.' : 'Đã tự chấm sai.', result === 'correct' ? 'good' : 'bad');
+    }
+
+    function move(delta) {
+      if (!filtered.length) return;
+      currentPos = (currentPos + delta + filtered.length) % filtered.length;
+      renderCurrent();
+      renderList();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function randomQuestion() {
+      if (!filtered.length) return;
+      currentPos = Math.floor(Math.random() * filtered.length);
+      renderCurrent();
+      renderList();
+    }
+
+    function toggleStar() {
+      const q = filtered[currentPos];
+      if (!q) return;
+      const st = getQState(q.id);
+      st.starred = !st.starred;
+      saveState();
+      refreshFilter(q.id);
+    }
+
+    function resetProgress() {
+      const ok = confirm('Xóa toàn bộ tiến độ luyện thi trên trình duyệt này?');
+      if (!ok) return;
+      state = {};
+      saveState();
+      refreshFilter();
+    }
+
+    function copyAnswer() {
+      const q = filtered[currentPos];
+      if (!q) return;
+      navigator.clipboard?.writeText(q.answer).then(() => {
+        el.copyBtn.textContent = 'Đã copy';
+        setTimeout(() => el.copyBtn.textContent = 'Copy đáp án', 900);
+      }).catch(() => {
+        alert(q.answer);
+      });
+    }
+
+    function checkCurrent() {
+      const q = filtered[currentPos];
+      if (!q) return;
+      const info = getQuestionType(q);
+      if (info.type === 'multi') checkOptions(info);
+      else if (info.type === 'yesno') checkYesNo(info);
+      else revealAnswer(false);
+    }
+
+    el.mode.addEventListener('change', () => refreshFilter());
+    el.search.addEventListener('input', () => refreshFilter());
+    el.randomBtn.addEventListener('click', randomQuestion);
+    el.resetBtn.addEventListener('click', resetProgress);
+    el.prevBtn.addEventListener('click', () => move(-1));
+    el.nextBtn.addEventListener('click', () => move(1));
+    el.showBtn.addEventListener('click', () => revealAnswer(false));
+    el.starBtn.addEventListener('click', toggleStar);
+    el.copyBtn.addEventListener('click', copyAnswer);
+    el.markCorrectBtn.addEventListener('click', () => mark('correct'));
+    el.markWrongBtn.addEventListener('click', () => mark('wrong'));
+
+    document.addEventListener('keydown', (e) => {
+      const tag = document.activeElement?.tagName?.toLowerCase();
+      if (tag === 'textarea' || tag === 'input' || tag === 'select') return;
+      if (e.key === 'ArrowLeft') move(-1);
+      if (e.key === 'ArrowRight') move(1);
+      if (e.key.toLowerCase() === 's') toggleStar();
+      if (e.code === 'Space') {
+        e.preventDefault();
+        revealAnswer(false);
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        checkCurrent();
+      }
+      if (/^[1-8]$/.test(e.key)) {
+        const q = filtered[currentPos];
+        if (!q) return;
+        const info = getQuestionType(q);
+        if (info.type !== 'single' && info.type !== 'multi') return;
+        const opt = info.options[Number(e.key) - 1];
+        if (!opt) return;
+        if (info.type === 'single') {
+          currentSelections = new Set([opt.key]);
+          getQState(q.id).selected = [opt.key];
+          saveState();
+          checkOptions(info);
+        } else {
+          const st = getQState(q.id);
+          if (currentSelections.has(opt.key)) currentSelections.delete(opt.key);
+          else currentSelections.add(opt.key);
+          st.selected = Array.from(currentSelections);
+          saveState();
+          renderCurrent();
+        }
+      }
+    });
+
+    refreshFilter();
+  </script>
+</body>
+</html>
